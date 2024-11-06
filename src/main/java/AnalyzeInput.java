@@ -30,9 +30,8 @@ public class AnalyzeInput {
 
                 System.out.println("next type");
 
-                currentExam.setByIndex(type, CharConverter.toString(typeArray, index).trim());
+                currentExam.setByIndex(type, CharConverter.toString(typeArray, index));
                 if (type == 3) {
-                    exams[exams.length] = currentExam;
                     currentExam = new Exam();
                     type = 0;
                 } else {
