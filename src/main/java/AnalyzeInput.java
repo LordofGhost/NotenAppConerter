@@ -11,48 +11,50 @@ public class AnalyzeInput {
     public static Exam[] getExamsFromString(String in) {
 
         char[] chars = getFormatedCharArray(in.toCharArray()); // input
+        int index = 0;
 
         short type = 0; // 0 = date, 1 = subject, 2 = type, 3 = grade
-        int index = 0; // index of the current char in the typeArray
+        int typeIndex = 0; // index of the current char in the typeArray
         char[] typeArray = new char[50];
 
         Exam[] exams = new Exam[MAX_EXAMS];
+        int examIndex = 0;
         Exam currentExam = new Exam();
 
 
         for (char symbol : chars) {
+            if (checkForGap(typeIndex, typeArray, symbol, type)) {
 
-            System.out.println(type + " " + Arrays.toString(typeArray));
-            //System.out.println(index + " " + typeArray[index] + ""+  symbol);
-            System.out.println(currentExam.date + " " + currentExam.subject + " " + currentExam.type + " " + currentExam.grade);
+                currentExam.setByIndex(type, CharConverter.toString(typeArray, typeIndex));
 
-            if (checkForGap(index, typeArray, symbol)) {
-
-                System.out.println("next type");
-
-                currentExam.setByIndex(type, CharConverter.toString(typeArray, index));
                 if (type == 3) {
+                    exams[examIndex] = currentExam;
+                    examIndex++;
                     currentExam = new Exam();
+
                     type = 0;
+                    typeIndex = 0;
                 } else {
                     type++;
-                    index = 0;
+                    typeIndex = 0;
                 }
+            } else if (index == chars.length - 1) { // last char (grade)
+                currentExam.setByIndex(3, Character.toString(symbol));
+                exams[examIndex] = currentExam;
             } else {
-                typeArray[index] = symbol;
-                index++;
+                typeArray[typeIndex] = symbol;
+                typeIndex++;
             }
+            index++;
         }
-
         return exams;
     }
 
-    public static Boolean checkForGap(int index, char[] typeArray, char symbol) {
+    public static Boolean checkForGap(int index, char[] typeArray, char symbol, int type) {
+        // grade
         if (index != 0 && typeArray[index - 1] == ',' && symbol == ' ') {
             return true;
-        } else {
-            return false;
-        }
+        } else return type == 3 && index > 0 && symbol == ' ';
     }
 
     // removes unnecessary characters from the input

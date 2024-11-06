@@ -7,7 +7,8 @@ public class CharConverter {
 
         System.arraycopy(chars, 0, newChars, 0, index);
 
-        String out = String.copyValueOf(newChars);
-        return out.trim();
+        String copy = String.copyValueOf(newChars);
+        copy = copy.replace(",", "");
+        return copy.trim();
     }
 }
