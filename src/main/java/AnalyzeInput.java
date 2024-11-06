@@ -58,6 +58,27 @@ public class AnalyzeInput {
     // removes unnecessary characters from the input
     public static char[] getFormatedCharArray(char[] in) {
 
-        return in;
+        int beforeContent = 0;
+        int length = 0;
+
+        boolean inContent = false;
+        for (char currentChar : in) {
+            if (!inContent && Character.isDigit(currentChar)) {
+                inContent = true;
+            } else if (currentChar == ' ' && in[beforeContent + length + 1] == 'B' && Character.isDigit(in[beforeContent + length -1])) {
+                break;
+            }
+
+            if (inContent) {
+                length++;
+            } else {
+                beforeContent++;
+            }
+        }
+
+        char[] out = new char[length];
+        System.arraycopy(in , beforeContent, out, 0, length);
+
+        return out;
     }
 }
